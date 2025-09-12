@@ -14,7 +14,7 @@ dados = {'nome': 'João', 'idade': 35}
 p1 = Pessoa(**dados)
 # p1.nome = 'EITA'
 # print(p1.idade)
-# p1.__dict__['outra'] = 'coisa'
+# p1.__dict__['outra'] = 'coisa' # p1 recebe a chave 'outra' e essa chave recebe o valor 'coisa'
 # p1.__dict__['nome'] = 'EITA'
 # del p1.__dict__['nome'] remove a atributo do objeto
 # print(p1.__dict__)

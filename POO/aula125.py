@@ -13,6 +13,6 @@ class Pessoa:
         
 p1 = Pessoa('Alisson', 22)
 
-#Pessoa.ano_atual = 1 como ano_atual é um atributo de classe, esssa mudança afeta todos os objetos
+#Pessoa.ano_atual = 1 # como ano_atual é um atributo de classe, esssa mudança afeta todos os objetos
 
 print(p1.get_ano_nasc())

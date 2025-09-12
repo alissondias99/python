@@ -10,13 +10,13 @@
 # print(isinstance(string, str))
 
 class Pessoa:
-    def __init__(self, nome, sobrenome): # o self é uma convensão (pode ter qualquer outro nome caso queira) obrigatoria e sempre tem que ser o primeria parametro dos métodos, é usado para refenciar o objeto em outros métodos ou funções
+    def __init__(self, nome, sobrenome): # o self é uma convensão (pode ter qualquer outro nome) obrigatoria e sempre tem que ser o primeiro parâmetro dos métodos, é usado para refenciar o objeto em outros métodos ou funções
         self.nome = nome # = p1.nome = 'Alisson' se fosse definir manualmente
         self.sobrenome = sobrenome
 
 p1 = Pessoa('Alisson', 'Dias')
 
-#print(p1.nome, p1.sobrenome)
+#print(p1.nome, p1.sobrenome) 
 
 class  Carro:
     def __init__(self, nome): #←Isso é um parametro
