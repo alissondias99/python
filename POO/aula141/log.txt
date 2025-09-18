@@ -1,0 +1,6 @@
+Erro: Teste logFileMixin
+Success: Teste 1 logFileMixin
+Erro: Teste logFileMixin
+Success: Teste 1 logFileMixin
+Erro: Teste logFileMixin
+Success: Teste 1 logFileMixin
