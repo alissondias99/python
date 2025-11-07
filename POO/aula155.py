@@ -33,16 +33,22 @@ def meu_repr(self):
     return f'{type(self).__name__}({self.__dict__})'
 
 class Meta(type):
-     def __new__(mcs, name, bases, dct): # com esse new é possivel executar ações antes da criação da classe
+    
+    def __new__(mcs, name, bases, dct): # com esse new é possivel executar ações antes da criação da classe
         print('METACLASS NEW')
         cls = super().__new__(mcs, name, bases, dct)
         cls.attr = 1234 # todas as instâncias tem acesso a esse atributo
         cls.__repr__ = meu_repr
-        
         if 'falar' not in cls.__dict__ or not callable(cls.__dict__['falar']):
             raise NotImplementedError('Implemente falar')
         
         return cls
+    
+    def __call__(cls, *args, **kwargs):
+        instancia = super().__call__(*args, **kwargs) # quando o super é chamado dentro método call de uma metaclasse, ele já fica "ligado" ao cls, então não é necessario declarar novamente
+        if 'nome' not in instancia.__dict__:
+            raise NotImplementedError('Implemente nome')
+        return instancia
 
 class Pessoa(metaclass=Meta):
     # falar = 123
