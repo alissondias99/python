@@ -16,7 +16,8 @@
 # - Os cabeçalhos HTTP (Content-Type, Accept)
 # - O corpo da mensagem (Pode estar em vazio em alguns casos)
 
-# para iniciar o servido com os arquivo de aula190_site: python -m http.server -d aula190_site/ 3333
+# para iniciar o servido com os arquivo de aula190_site: 
+# python -m http.server -d aula190_site/ 3333
 
 #↓ Conteúdo aula 191 ↓
 #request para requisições HTTP
