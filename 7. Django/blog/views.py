@@ -1,24 +1,46 @@
-
 from django.shortcuts import render
-
+from blog.data import posts
 
 def blog(request):
-    print('blog')
+   
+    context = { # ← define comportamentos da página
+        'text': 'Olá blog',
+        'posts': posts
+    }
+    
     return render(
         request,
         'blog/blog.html',
-        {
-            'text': 'Estamos no blog' # ← context, define comportamentos da página
-        }
+        context 
+        
     )
 
+def post(request, post_id):
+
+    found_post = None
+
+    for post in posts:
+        if post['id'] == post_id:
+            found_post = post
+            break
+
+    context = {
+        'post': found_post # somente o post selecionado será exibido
+    }
+    
+    return render(
+        request,
+        'blog/post.html',
+        context 
+        
+    )
 
 def exemplo(request):
-    print('exemplo')
+    
     return render(
         request,
         'blog/exemplo.html',
         {
-            'text': 'Estamos no exemplo' # ← context, define comportamentos da página
+            'text': 'Estamos no exemplo' 
         }
     )
