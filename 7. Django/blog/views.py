@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpRequest, Http404
 from blog.data import posts
 
 def blog(request):
@@ -23,6 +24,9 @@ def post(request, post_id):
         if post['id'] == post_id:
             found_post = post
             break
+    
+    if found_post is None:
+        raise Http404('Post não existe')
 
     context = {
         'post': found_post # somente o post selecionado será exibido
