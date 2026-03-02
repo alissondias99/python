@@ -34,14 +34,24 @@
     </nav>
 
     <div class="search">
-      <form action="" method="get">
-        <input type="text" class="search-input" placeholder="Search" id="search" name="q">
+      <form action="{% url "contact:search" %}" method="get">
+        <input 
+          type="search" 
+          class="search-input" 
+          placeholder="Search" 
+          id="search" 
+          name="q"
+          value = "{{ request.GET.q.strip }}">
       </form>
     </div>
   </header>
 
   <main class='content'>
+    {% include "global/partials/_pagination.html" %}
+    
     {% block content %}{% endblock content %}
+
+    {% include "global/partials/_pagination.html" %}
     <main>
 </body>
 </html>
