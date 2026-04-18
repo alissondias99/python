@@ -1,12 +1,22 @@
 from django.core.exceptions import ValidationError
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from contact.models import Contact
 
 class ContactForm(forms.ModelForm):
+    picture = forms.ImageField(
+        widget= forms.FileInput(
+            attrs= {
+                'accept': 'image/*',
+            }
+        )
+    )
     class Meta:
         model = Contact
         fields = ('first_name', 'last_name', 'phone',
-                  'email', 'description', 'category',)
+                  'email', 'description', 'category',
+                  'picture',)
 
     def __init__(self, *args, **kwargs): # atualiza o campo first name e cria uma placeholder
         super().__init__(*args, **kwargs)
@@ -44,3 +54,19 @@ class ContactForm(forms.ModelForm):
 
         return first_name
     
+class RegisterForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = (
+            'first_name', 'last_name', 'email',
+            'username', 'password1', 'password2'
+        )
+
+    def clean_clean(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            self.add_error(
+                'email',
+                ValidationError('Já existe esse e-mail', code='invalid')
+            )
+        return email

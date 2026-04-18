@@ -34,3 +34,7 @@ Criando e modificando a senha de um super usuário Django
 python manage.py createsuperuser
 python manage.py changepassword USERNAME
 ```
+
+```
+Para popular o banco de dados execute o arquico create_contact dentro de utils
+```
