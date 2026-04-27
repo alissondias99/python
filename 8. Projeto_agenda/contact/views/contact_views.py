@@ -1,70 +1,132 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q
 from django.core.paginator import Paginator
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+
 from contact.models import Contact
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+from contact.forms import ContactForm
+
 
 def index(request):
-
-    # somente contatos com show = True iram aparecer na página
     contacts = Contact.objects \
-        .filter(show=True) \
-        .order_by('-id') 
-    
+        .filter(show=True)\
+        .order_by('-id')
+
     paginator = Paginator(contacts, 10)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'site_title': 'Contatos - '
+    }
 
     return render(
         request,
         'contact/index.html',
-        {
-            'page_obj': page_obj,
-            'title': 'Contatos -',
-        }
+        context
     )
+
 
 def search(request):
     search_value = request.GET.get('q', '').strip()
 
-    if search_value == '': # barra de pesquisa vazia = redireciona para a base
+    if search_value == '':
         return redirect('contact:index')
-    
+
     contacts = Contact.objects \
-        .filter(show=True) \
+        .filter(show=True)\
         .filter(
-                Q(first_name__icontains = search_value,) |
-                Q(last_name__icontains = search_value,) |
-                Q(phone__icontains = search_value,) |
-                Q(email__icontains = search_value,)
-                ) \
-        .order_by('-id') 
+            Q(first_name__icontains=search_value) |
+            Q(last_name__icontains=search_value) |
+            Q(phone__icontains=search_value) |
+            Q(email__icontains=search_value)
+        )\
+        .order_by('-id')
 
     paginator = Paginator(contacts, 10)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'site_title': 'Search - ',
+        'search_value': search_value,
+    }
 
     return render(
         request,
         'contact/index.html',
-        {
-            'page_obj': page_obj,
-            'title': 'Search -',
-        }
+        context
     )
 
-def contact(request, contact_id): # essa view será usada quando um contato específico for procurado
 
-    single_contact = get_object_or_404( 
-        Contact, pk = contact_id, show=True
+def contact(request, contact_id):
+    # single_contact = Contact.objects.filter(pk=contact_id).first()
+    single_contact = get_object_or_404(
+        Contact, pk=contact_id, show=True
     )
-
     site_title = f'{single_contact.first_name} {single_contact.last_name} - '
+
+    context = {
+        'contact': single_contact,
+        'site_title': site_title
+    }
 
     return render(
         request,
         'contact/contact.html',
+        context
+    )
+
+
+@login_required(login_url='contact:login')
+def create(request):
+    form = ContactForm(request.POST or None, request.FILES or None)
+
+    if request.method == 'POST' and form.is_valid():
+        contact = form.save(commit=False)
+        contact.owner = request.user
+        contact.save()
+        messages.success(request, 'Contato criado com sucesso.')
+        return redirect('contact:index')
+
+    return render(
+        request,
+        'contact/create.html',
         {
-            'contact': single_contact,
-            'title': site_title,
+            'form': form,
+            'form_action': request.path,
         }
     )
+
+
+@login_required(login_url='contact:login')
+def update(request, contact_id):
+    contact_obj = get_object_or_404(Contact, pk=contact_id, owner=request.user)
+    form = ContactForm(request.POST or None, request.FILES or None, instance=contact_obj)
+
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Contato atualizado com sucesso.')
+        return redirect('contact:contact', contact_id=contact_obj.id)
+
+    return render(
+        request,
+        'contact/create.html',
+        {
+            'form': form,
+            'form_action': request.path,
+        }
+    )
+
+
+@login_required(login_url='contact:login')
+def delete(request, contact_id):
+    contact_obj = get_object_or_404(Contact, pk=contact_id, owner=request.user)
+    contact_obj.show = False
+    contact_obj.save()
+    messages.success(request, 'Contato removido.')
+    return redirect('contact:index')
